@@ -1,3 +1,4 @@
+from ctypes import alignment
 from pyrep.backend import sim, utils
 from pyrep.objects import Object
 from pyrep.objects.dummy import Dummy
@@ -11,6 +12,8 @@ from pyrep.const import PYREP_SCRIPT_TYPE
 from typing import List, Union
 import numpy as np
 import warnings
+
+from absl import logging
 
 
 class Arm(RobotComponent):
@@ -330,6 +333,8 @@ class Arm(RobotComponent):
             raise ConfigurationPathError('Could not create path.')
         return ArmConfigurationPath(self, ret_floats)
 
+
+
     def get_nonlinear_path(self, position: Union[List[float], np.ndarray],
                            euler: Union[List[float], np.ndarray] = None,
                            quaternion: Union[List[float], np.ndarray] = None,
@@ -373,6 +378,8 @@ class Arm(RobotComponent):
         :return: A non-linear path in the arm configuration space.
         """
 
+        logging.info("planning non linear path")
+
         handles = [j.get_handle() for j in self.joints]
 
         try:
@@ -382,12 +389,17 @@ class Arm(RobotComponent):
         except ConfigurationError as e:
             raise ConfigurationPathError('Could not create path.') from e
 
+        logging.info("calling external script")
+        
+
         _, ret_floats, _, _ = utils.script_call(
             'getNonlinearPath@PyRep', PYREP_SCRIPT_TYPE,
             ints=[self._collision_collection, int(ignore_collisions),
                   trials_per_goal] + handles,
             floats=configs.flatten().tolist(),
             strings=[algorithm.value])
+
+        logging.info("done")
 
         if len(ret_floats) == 0:
             raise ConfigurationPathError('Could not create path.')
@@ -432,12 +444,14 @@ class Arm(RobotComponent):
             can be created.
         :return: A linear or non-linear path in the arm configuration space.
         """
+        logging.info("planning linear path")
         try:
             p = self.get_linear_path(position, euler, quaternion,
                                      ignore_collisions=ignore_collisions,
                                      relative_to=relative_to)
             return p
-        except ConfigurationPathError:
+        except ConfigurationPathError as e:
+            #logging.error("configuration error", e)
             pass  # Allowed. Try again, but with non-linear.
 
         # This time if an exception is thrown, we dont want to catch it.
