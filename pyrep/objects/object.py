@@ -43,11 +43,8 @@ class Object(object):
             name will be retrieved.
         :return: True of the object exists.
         """
-        try:
-            sim.simGetObjectHandle(name)
-        except:
-            return False
-        return True
+        return sim.hasObjectHandle(name)
+
 
     @staticmethod
     def get_object_type(name: str) -> ObjectType:

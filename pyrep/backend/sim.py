@@ -88,6 +88,12 @@ def simQuitSimulator(doNotDisplayMessages):
     lib.simQuitSimulator(doNotDisplayMessages)
 
 
+def hasObjectHandle(objectName):
+    handle = lib.simGetObjectHandle(objectName.encode('ascii'))
+    if handle:
+        return handle >= 0
+    return False
+
 def simGetObjectHandle(objectName):
     handle = lib.simGetObjectHandle(objectName.encode('ascii'))
     if handle < 0:
