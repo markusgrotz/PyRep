@@ -21,6 +21,7 @@ class VisionSensor(Object):
                use_local_lights=False, show_fog=True,
                near_clipping_plane=1e-2, far_clipping_plane=10.0,
                view_angle=60.0, ortho_size=1.0, sensor_size=None,
+               background_color=None,
                render_mode=RenderMode.OPENGL3,
                position=None, orientation=None) -> 'VisionSensor':
         """ Create a Vision Sensor
@@ -70,6 +71,11 @@ class VisionSensor(Object):
         if not show_fog:
             options |= 64
 
+        if background_color: #show_default_background_color:
+            options |= 128
+        else:
+            background_color = [0.0, 0.0, 0.0]
+
         int_params = [
             resolution[0],  # 0
             resolution[1],  # 1
@@ -79,20 +85,22 @@ class VisionSensor(Object):
 
         if sensor_size is None:
             sensor_size = [0.01, 0.01, 0.03]
+        # sensor_size[1] and sensor_size[2] should be 0 according to the documentation...
 
         float_params = [
             near_clipping_plane,    # 0
             far_clipping_plane,     # 1
             math.radians(view_angle) if perspective_mode else ortho_size,  # 2
             sensor_size[0],         # 3
-            sensor_size[1],         # 4
+            sensor_size[1],         # 4 
             sensor_size[2],         # 5
-            0.0,                    # 6
-            0.0,                    # 7
-            0.0,                    # 8
+            background_color[0],    # 6
+            background_color[1],    # 7
+            background_color[2],    # 8
             0.0,                    # 9
             0.0,                    # 10
         ]
+
 
         vs = VisionSensor(
             sim.simCreateVisionSensor(options, int_params, float_params, None)
