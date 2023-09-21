@@ -1,3 +1,5 @@
+import logging
+
 from ctypes import alignment
 from pyrep.backend import sim, utils
 from pyrep.objects import Object
@@ -13,7 +15,6 @@ from typing import List, Union
 import numpy as np
 import warnings
 
-from absl import logging
 
 
 class Arm(RobotComponent):
