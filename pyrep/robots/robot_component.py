@@ -15,6 +15,7 @@ class RobotComponent(Object):
 
     def __init__(self, count: int, name: str, joint_names: List[str],
                  base_name: str = None):
+        self.name = name
         suffix = '' if count == 0 else '#%d' % (count - 1)
         super().__init__(
             name + suffix if base_name is None else base_name + suffix)

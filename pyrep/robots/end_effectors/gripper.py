@@ -144,3 +144,7 @@ class Gripper(RobotComponent):
         if len(self._touch_sensors) == 0:
             raise NotImplementedError('No touch sensors for this robot!')
         return [ts.read()[0] for ts in self._touch_sensors]
+
+    def colorize(self, color: List[float]):
+        from pyrep.objects import Shape
+        Shape(f"{self.name}_visual").set_color(color)

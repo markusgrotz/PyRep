@@ -25,6 +25,7 @@ class Arm(RobotComponent):
                  base_name: str = None,
                  max_velocity=1.0, max_acceleration=4.0, max_jerk=1000):
         """Count is used for when we have multiple copies of arms"""
+        self.name = name
         joint_names = ['%s_joint%d' % (name, i+1) for i in range(num_joints)]
         super().__init__(count, name, joint_names, base_name)
 
@@ -493,3 +494,12 @@ class Arm(RobotComponent):
         """
         handle = sim.sim_handle_all if obj is None else obj.get_handle()
         return sim.simCheckCollision(self._collision_collection, handle) == 1
+
+
+
+    def colorize(self, color: List[float]):
+        from pyrep.objects import Shape
+        i = 0
+        while Object.exists(f"{self.name}_link{i}_visual"):
+            Shape(f"{self.name}_link{i}_visual").set_color(color)
+            i = i + 1
