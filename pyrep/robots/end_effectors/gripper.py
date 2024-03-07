@@ -5,6 +5,8 @@ from pyrep.objects.force_sensor import ForceSensor
 from pyrep.robots.robot_component import RobotComponent
 import numpy as np
 
+import logging
+
 POSITION_ERROR = 0.001
 
 
@@ -46,6 +48,7 @@ class Gripper(RobotComponent):
         # Check if detected and that we are not already grasping it.
         if detected and obj not in self._grasped_objects:
             self._grasped_objects.append(obj)
+            logging.debug("Grasping object with name: %s. Object is being attached to gripper.", obj.get_name())
             self._old_parents.append(obj.get_parent())  # type: ignore
             obj.set_parent(self._attach_point, keep_in_place=True)
         return detected
