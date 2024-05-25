@@ -494,12 +494,3 @@ class Arm(RobotComponent):
         """
         handle = sim.sim_handle_all if obj is None else obj.get_handle()
         return sim.simCheckCollision(self._collision_collection, handle) == 1
-
-
-
-    def colorize(self, color: List[float]):
-        from pyrep.objects import Shape
-        i = 0
-        while Object.exists(f"{self.name}_link{i}_visual"):
-            Shape(f"{self.name}_link{i}_visual").set_color(color)
-            i = i + 1

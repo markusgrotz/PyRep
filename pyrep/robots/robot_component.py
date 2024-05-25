@@ -273,8 +273,11 @@ class RobotComponent(Object):
             raise RuntimeError(
                 'Tried to set values for %d joints, but joint group consists '
                 'of %d joints.' % (len(inputs), len(self.joints)))
-
-
+        
+    def colorize(self, color: List[float]):
+        for v in self.get_visuals():
+            if v.get_name().startswith(self.name):
+                v.set_color(color)
 
     def hide(self):
         for v in self.get_visuals():
